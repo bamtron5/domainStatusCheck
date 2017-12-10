@@ -48,9 +48,6 @@ function readFile() {
       } else {
         fs.readFile('status.txt', 'utf8', (err, data) => {
           if (text !== data) {
-            // String
-            notifier.notify('Message');
-
             // Object
             notifier.notify({
               'title': `DOMAIN STATUS CHANGE`,
@@ -59,6 +56,7 @@ function readFile() {
 
             exec('rm status.txt', function(err, stdout, stderr) {
               //null;
+              // remove file so it can be written with the next status
             });
           } else {
             //null;
