@@ -1,1 +1,0 @@
-   Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited/n   Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited/n   Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited/n   Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited

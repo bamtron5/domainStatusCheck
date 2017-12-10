@@ -6,9 +6,8 @@ import * as moment from 'moment';
 let result = null;
 let filter = null;
 let text = null;
+const fileName = 'status.txt';
 const interval = 1000 * 60 * 60; // every hr
-
-const domainStatus = [];
 
 function getWho() {
   return new Promise((resolve, reject) => {
@@ -31,41 +30,46 @@ function getStatus() {
 function writeFile() {
   return new Promise((resolve) => {
     text = filter.join('/n');
-    return fs.writeFile('status.txt', text, (res) => {
+    return fs.writeFile(fileName, text, (res) => {
       return resolve();
     });
   });
 }
 
-function readFile() {
+function evaluateFile() {
   return new Promise((resolve, reject) => {
-    fs.stat('status.txt', (err, stats) => {
+    fs.stat(fileName, (err, stats) => {
       if (err) {
         writeFile()
           .then(() => {
+            console.log(`${fileName} written.`);
             return resolve();
           });
       } else {
-        fs.readFile('status.txt', 'utf8', (err, data) => {
-          if (text !== data) {
-            // Object
-            notifier.notify({
-              'title': `DOMAIN STATUS CHANGE`,
-              'message': `${process.argv[2]} has a status change`
-            });
-
-            exec('rm status.txt', function(err, stdout, stderr) {
-              //null;
-              // remove file so it can be written with the next status
-            });
-          } else {
-            //null;
-            console.log(`${process.argv[2]} domain status is the same`);
-            console.log(`next run in ${moment().add(interval).format('LLLL')}`);
-          }
-        });
+        readFile();
       }
     });
+  });
+}
+
+function readFile() {
+  fs.readFile(fileName, 'utf8', (err, data) => {
+    if (text !== data) {
+      const msg = `${process.argv[2]} has a status change`;
+      // Object
+      notifier.notify({
+        'title': `DOMAIN STATUS CHANGE`,
+        'message': msg
+      });
+
+      exec(`rm ${fileName}`); // just remove it and it will recheck on next pass
+
+      console.log(msg);
+    } else {
+
+      console.log(`${process.argv[2]} domain status is the same`);
+      console.log(`next run at ${moment().add(interval).format('LLLL')}`);
+    }
   });
 }
 
@@ -76,7 +80,7 @@ function init() {
       return getStatus();
     })
     .catch(e => console.log(e))
-    .then((res) => readFile())
+    .then((res) => evaluateFile())
     .catch(e => console.log(e));
 }
 
