@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "moduleResolution": "node"
+  },
+  "compileOnSave": true,
+  "buildOnSave": true,
+  "lib": ["es2015"],
+  "exclude": [
+    "node_modules",
+    "typings",
+    "vendor",
+    "~/node_modules",
+    "ionic"
+  ]
+}
