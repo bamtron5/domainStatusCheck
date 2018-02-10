@@ -15,6 +15,7 @@ function getWho() {
   return new Promise((resolve, reject) => {
     return exec(`whois ${process.argv[2]}`, function(err, stdout, stderr) {
       if (stderr || err) return reject({stderr, err});
+      result = stdout;
       return resolve(stdout);
     });
   });
@@ -105,15 +106,14 @@ function notify() {
   });
 }
 
-function init() {
-  getWho()
-    .then((res) => {
-      result = res;
-      return getStatus();
-    })
-    .catch(e => console.log(e))
-    .then((res) => evaluateFile())
-    .catch(e => console.log(e));
+async function init() {
+  try {
+    const whoRes = await getWho();
+    const statusRes = await getStatus();
+    const evaluateRes = await evaluateFile();
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 init();
